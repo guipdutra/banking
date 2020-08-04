@@ -52,4 +52,44 @@ defmodule BankingWeb.UserControllerTest do
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
+
+
+  describe "sign_in" do
+    alias Banking.Contexts.Accounts
+
+    setup %{conn: conn} do
+      {:ok, conn: put_req_header(conn, "accept", "application/json"), user: create_user()}
+    end
+
+    test "renders jwt token when data is valid", %{conn: conn, user: user} do
+      conn =
+        post(conn, Routes.user_path(conn, :sign_in), %{email: user.email, password: user.password})
+
+      assert %{"jwt" => _token} = json_response(conn, 200)
+    end
+
+    test "returns error when password is invalid", %{conn: conn, user: user} do
+      conn =
+        post(conn, Routes.user_path(conn, :sign_in), %{email: user.email, password: "wrongpasswd"})
+
+      assert %{"error" => "Login error"} == json_response(conn, 401)
+    end
+
+    test "returns error when email do not exist", %{conn: conn, user: user} do
+      conn =
+        post(conn, Routes.user_path(conn, :sign_in), %{
+          email: "wrongemail@wrong.com",
+          password: user.password
+        })
+
+      assert %{"error" => "Login error"} == json_response(conn, 401)
+    end
+
+    defp create_user() do
+      user_attrs = params_for(:user)
+      {:ok, user} = Accounts.create_user(user_attrs)
+
+      user
+    end
+  end
 end

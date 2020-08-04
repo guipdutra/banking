@@ -20,4 +20,10 @@ defmodule BankingWeb.UserView do
       token: token
     }
   end
+
+  def render("jwt.json", %{jwt: token}) do
+    %{
+      jwt: token
+    }
+  end
 end
