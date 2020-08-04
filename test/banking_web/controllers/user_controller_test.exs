@@ -1,96 +1,55 @@
 defmodule BankingWeb.UserControllerTest do
   use BankingWeb.ConnCase
 
-  alias Banking.Accounts
-  alias Banking.Accounts.User
+  import Banking.Factory
+  alias Banking.Contexts.Accounts
 
-  @create_attrs %{
-    email: "some email",
-    encrypted_password: "some encrypted_password",
-    name: "some name"
-  }
-  @update_attrs %{
-    email: "some updated email",
-    encrypted_password: "some updated encrypted_password",
-    name: "some updated name"
-  }
-  @invalid_attrs %{email: nil, encrypted_password: nil, name: nil}
-
-  def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@create_attrs)
-    user
-  end
+  @create_attrs params_for(:user)
+  @invalid_attrs %{email: nil, name: nil, password: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  describe "index" do
-    test "lists all users", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
-    end
-  end
-
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.user_path(conn, :show, id))
+      assert response = json_response(conn, 200)["data"]
 
-      assert %{
-               "id" => id,
-               "email" => "some email",
-               "encrypted_password" => "some encrypted_password",
-               "name" => "some name"
-             } = json_response(conn, 200)["data"]
+      user = Accounts.get_user!(response["user"]["id"])
+
+      assert user.id == response["user"]["id"]
+      assert user.name == response["user"]["name"]
+      assert user.email == response["user"]["email"]
+    end
+
+    test "renders error when password is invalid", %{conn: conn} do
+      user_attrs = params_for(:user, password: "passwd")
+      conn = post(conn, Routes.user_path(conn, :create), user: user_attrs)
+
+      assert %{"errors" => %{"password" => ["should be at least 8 character(s)"]}} ==
+               json_response(conn, 422)
+    end
+
+    test "renders error when email is invalid", %{conn: conn} do
+      user_attrs = params_for(:user, email: "invalid.com.br")
+      conn = post(conn, Routes.user_path(conn, :create), user: user_attrs)
+
+      assert %{"errors" => %{"email" => ["has invalid format"]}} == json_response(conn, 422)
+    end
+
+    test "renders error when email already been taken", %{conn: conn} do
+      user = insert(:user)
+      user_attrs = params_for(:user, email: user.email)
+      conn = post(conn, Routes.user_path(conn, :create), user: user_attrs)
+
+      assert %{"errors" => %{"email" => ["has already been taken"]}} = json_response(conn, 422)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
-  end
-
-  describe "update user" do
-    setup [:create_user]
-
-    test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
-      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.user_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "email" => "some updated email",
-               "encrypted_password" => "some updated encrypted_password",
-               "name" => "some updated name"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, user: user} do
-      conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "delete user" do
-    setup [:create_user]
-
-    test "deletes chosen user", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :delete, user))
-      assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.user_path(conn, :show, user))
-      end
-    end
-  end
-
-  defp create_user(_) do
-    user = fixture(:user)
-    {:ok, user: user}
   end
 end

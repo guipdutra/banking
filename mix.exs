@@ -25,7 +25,7 @@ defmodule Banking.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/factories", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -43,7 +43,9 @@ defmodule Banking.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:guardian, "~> 2.0"},
       {:comeonin, "~> 5.0"},
-      {:bcrypt_elixir, "~> 2.0"}
+      {:bcrypt_elixir, "~> 2.0"},
+      {:ex_machina, "~> 2.4", only: :test},
+      {:faker, "~> 0.14", only: :test}
     ]
   end
 
