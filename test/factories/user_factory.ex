@@ -9,7 +9,7 @@ defmodule Banking.UserFactory do
         %User{
           name: Internet.user_name(),
           email: Internet.email(),
-          password: "longpassword",
+          password: "longpassword"
         }
       end
     end

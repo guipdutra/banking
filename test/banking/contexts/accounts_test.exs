@@ -36,28 +36,28 @@ defmodule Banking.Contexts.AccountsTest do
       user_attrs = params_for(:user, password: "passwd")
 
       assert {:error,
-        %Ecto.Changeset{
-          errors: [
-            password: {
-              "should be at least %{count} character(s)",
-              [count: 8, validation: :length, kind: :min, type: :string]
-            }
-          ]
-        }} = Accounts.create_user(user_attrs)
+              %Ecto.Changeset{
+                errors: [
+                  password: {
+                    "should be at least %{count} character(s)",
+                    [count: 8, validation: :length, kind: :min, type: :string]
+                  }
+                ]
+              }} = Accounts.create_user(user_attrs)
     end
 
     test "create_user/1 with invalid email returns error changeset" do
       user_attrs = params_for(:user, email: "invalid.com.br")
 
       assert {:error,
-        %Ecto.Changeset{
-          errors: [
-            email: {
-              "has invalid format",
-              [validation: :format]
-            }
-          ]
-        }} = Accounts.create_user(user_attrs)
+              %Ecto.Changeset{
+                errors: [
+                  email: {
+                    "has invalid format",
+                    [validation: :format]
+                  }
+                ]
+              }} = Accounts.create_user(user_attrs)
     end
 
     test "create_user/1 when email already been taken" do
@@ -65,13 +65,13 @@ defmodule Banking.Contexts.AccountsTest do
       user_attrs = params_for(:user, email: user.email)
 
       assert {:error,
-        %Ecto.Changeset{
-          errors: [
-            email:
-            {"has already been taken",
-              [constraint: :unique, constraint_name: "users_email_index"]}
-          ]
-        }} = Accounts.create_user(user_attrs)
+              %Ecto.Changeset{
+                errors: [
+                  email:
+                    {"has already been taken",
+                     [constraint: :unique, constraint_name: "users_email_index"]}
+                ]
+              }} = Accounts.create_user(user_attrs)
     end
   end
 end

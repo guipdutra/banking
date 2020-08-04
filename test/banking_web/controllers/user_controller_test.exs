@@ -53,7 +53,6 @@ defmodule BankingWeb.UserControllerTest do
     end
   end
 
-
   describe "sign_in" do
     alias Banking.Contexts.Accounts
 
