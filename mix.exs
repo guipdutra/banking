@@ -45,7 +45,8 @@ defmodule Banking.MixProject do
       {:comeonin, "~> 5.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:ex_machina, "~> 2.4", only: :test},
-      {:faker, "~> 0.14", only: :test}
+      {:faker, "~> 0.14", only: :test},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 
