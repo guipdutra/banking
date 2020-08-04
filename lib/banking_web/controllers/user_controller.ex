@@ -16,4 +16,12 @@ defmodule BankingWeb.UserController do
       conn |> render("show.json", %{jwt: token, user: user})
     end
   end
+
+  def sign_in(conn, %{"email" => email, "password" => password}) do
+    with {:ok, user, token} <- Guardian.authenticate(email, password) do
+      conn
+      |> put_status(:created)
+      |> render("user.json", %{user: user, jwt: token})
+    end
+  end
 end
