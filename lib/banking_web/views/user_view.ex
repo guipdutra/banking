@@ -17,6 +17,11 @@ defmodule BankingWeb.UserView do
         email: user.email,
         name: user.name
       },
+      checking_account: %{
+        id: user.checking_account.id,
+        number: user.checking_account.number,
+        balance: user.checking_account.balance
+      },
       token: token
     }
   end

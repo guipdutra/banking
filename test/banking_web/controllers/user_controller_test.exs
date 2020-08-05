@@ -23,6 +23,8 @@ defmodule BankingWeb.UserControllerTest do
       assert user.id == response["user"]["id"]
       assert user.name == response["user"]["name"]
       assert user.email == response["user"]["email"]
+      assert user.checking_account.number == response["checking_account"]["number"]
+      assert user.checking_account.balance == response["checking_account"]["balance"]
     end
 
     test "renders error when password is invalid", %{conn: conn} do
@@ -30,7 +32,7 @@ defmodule BankingWeb.UserControllerTest do
       conn = post(conn, Routes.user_path(conn, :create), user: user_attrs)
 
       assert %{"errors" => %{"password" => ["should be at least 8 character(s)"]}} ==
-        json_response(conn, 422)
+               json_response(conn, 422)
     end
 
     test "renders error when email is invalid", %{conn: conn} do
@@ -111,7 +113,7 @@ defmodule BankingWeb.UserControllerTest do
       conn = post(conn, Routes.user_path(conn, :create), user: user_attrs)
 
       assert %{"errors" => %{"password" => ["should be at least 8 character(s)"]}} ==
-        json_response(conn, 422)
+               json_response(conn, 422)
     end
 
     test "renders error when email is invalid", %{conn: conn} do

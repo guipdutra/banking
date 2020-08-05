@@ -5,6 +5,7 @@ defmodule Banking.Schemas.User do
 
   use Ecto.Schema
   import Ecto.Changeset
+  alias Banking.Schemas.CheckingAccount
 
   schema "users" do
     field :email, :string
@@ -12,6 +13,7 @@ defmodule Banking.Schemas.User do
     field :encrypted_password, :string
     field :password, :string, virtual: true
     field :is_admin, :boolean
+    belongs_to :checking_account, CheckingAccount
 
     timestamps()
   end
@@ -24,6 +26,7 @@ defmodule Banking.Schemas.User do
     |> validate_format(:email, ~r/^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/)
     |> validate_length(:password, min: 8)
     |> unique_constraint(:email)
+    |> cast_assoc(:checking_account)
     |> put_password_hash
   end
 
