@@ -55,7 +55,8 @@ defmodule Banking.Contexts.Cashier do
          %CheckingAccount{} = to_checking_account <-
            CheckingAccounts.get_checking_account_by_number(attrs["to_checking_account_number"]),
          {:ok, %CheckingAccount{}} <- decrease_balance(from_checking_account, attrs["value"]),
-         {:ok, %CheckingAccount{}} <- increase_balance(to_checking_account, attrs["value"]) do
+         {:ok, %CheckingAccount{}} <- increase_balance(to_checking_account, attrs["value"])
+    do
       attrs =
         Map.merge(attrs, %{
           "to_checking_account_id" => to_checking_account.id,
@@ -87,10 +88,9 @@ defmodule Banking.Contexts.Cashier do
   end
 
   defp validate_transaction_value(%{"value" => value}) do
-    with true <- value > 0 do
-      {:ok, :valid}
-    else
-      _ -> {:error, :invalid_value}
+    case value > 0 do
+      true -> {:ok, :valid}
+      _ ->  {:error, :invalid_value}
     end
   end
 
