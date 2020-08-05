@@ -12,6 +12,15 @@ defmodule Banking.UserFactory do
           password: "longpassword"
         }
       end
+
+      def admin_factory do
+        %User{
+          name: Internet.user_name(),
+          email: Internet.email(),
+          password: "passwd1234",
+          is_admin: true
+        }
+      end
     end
   end
 end
