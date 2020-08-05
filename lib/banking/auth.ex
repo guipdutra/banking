@@ -16,7 +16,7 @@ defmodule Banking.Auth do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    resource = Banking.Accounts.get_user!(id)
+    resource = Accounts.get_user!(id)
     {:ok, resource}
   end
 
