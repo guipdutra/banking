@@ -3,6 +3,7 @@ defmodule Banking.Factory do
 
   use Banking.{
     UserFactory,
-    CheckingAccountFactory
+    CheckingAccountFactory,
+    TransactionFactory
   }
 end
