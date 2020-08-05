@@ -17,7 +17,7 @@ defmodule Banking.Contexts.CheckingAccounts do
   """
   def generate_number do
     lenght = 26
-    number = :crypto.strong_rand_bytes(lenght) |> Base.url_encode64 |> binary_part(0, lenght)
+    number = :crypto.strong_rand_bytes(lenght) |> Base.url_encode64() |> binary_part(0, lenght)
 
     case list_checking_accounts_by_number(number) do
       [] -> number
