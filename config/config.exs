@@ -25,7 +25,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :banking, Banking.Guardian,
+config :banking, Banking.Auth,
   issuer: "banking",
   secret_key: "WonxCdViZGqiQXi8NMculRd9qXiGjsCsg0Ba6SiIEaCAjCJlHolx/jujtTZXEwxc"
 

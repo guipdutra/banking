@@ -1,4 +1,7 @@
-defmodule Banking.Guardian do
+defmodule Banking.Auth do
+  @moduledoc """
+  Auth module, responsible for auth
+  """
   use Guardian, otp_app: :banking
 
   alias Banking.Schemas.User

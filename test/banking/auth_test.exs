@@ -1,9 +1,9 @@
-defmodule Banking.GuardianTest do
+defmodule Banking.AuthTest do
   use Banking.DataCase
 
   alias Banking.Contexts.Accounts
   alias Banking.Schemas.User
-  alias Banking.Guardian
+  alias Banking.Auth
   import Banking.Factory
 
   @valid_attrs params_for(:user)
@@ -15,11 +15,11 @@ defmodule Banking.GuardianTest do
 
   describe "authenticate" do
     test "authenticate user", %{user: user} do
-      assert {:ok, user, token} = Guardian.authenticate(user.email, user.password)
+      assert {:ok, user, token} = Auth.authenticate(user.email, user.password)
     end
 
     test "given wrong password it returns error", %{user: user} do
-      assert {:error, :unauthorized} = Guardian.authenticate(user.email, "other")
+      assert {:error, :unauthorized} = Auth.authenticate(user.email, "other")
     end
   end
 end

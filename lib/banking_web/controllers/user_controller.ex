@@ -3,7 +3,7 @@ defmodule BankingWeb.UserController do
 
   alias Banking.Contexts.Accounts
   alias Banking.Schemas.User
-  alias Banking.Guardian
+  alias Banking.Auth
 
   action_fallback BankingWeb.FallbackController
 
@@ -12,14 +12,14 @@ defmodule BankingWeb.UserController do
            user_params
            |> Accounts.create_user(),
          {:ok, token, _claims} <-
-           Guardian.encode_and_sign(user) do
+           Auth.encode_and_sign(user) do
       conn |> render("show.json", %{jwt: token, user: user})
     end
   end
 
   def sign_in(conn, %{"email" => email, "password" => password}) do
-    case Guardian.authenticate(email, password) do
-      {:ok, user, token} ->
+    case Auth.authenticate(email, password) do
+      {:ok, _user, token} ->
         conn |> render("jwt.json", jwt: token)
 
       _ ->
